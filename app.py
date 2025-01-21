@@ -1,6 +1,6 @@
 import os
 import requests
-import json
+import pandas as pd
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -33,8 +33,6 @@ def get_table_fields(table_name):
         return "{ name color description }"
     elif table_name == "milestones":
         return "{ title description dueOn state number createdAt updatedAt }"
-    elif table_name == "refs":
-        return "{ name target { oid } }"
     elif table_name == "releases":
         return "{ name tagName createdAt description }"
     elif table_name == "deployments":
@@ -44,7 +42,7 @@ def get_table_fields(table_name):
     else:
         raise ValueError(f"Unknown table: {table_name}")
 
-def generate_query(table_name, first=10, after=None):
+def generate_query(table_name, first=100, after=None):
     fields = get_table_fields(table_name)
     return f"""
     query {{
@@ -55,16 +53,14 @@ def generate_query(table_name, first=10, after=None):
                 }}
                 pageInfo {{
                     endCursor
-                    startCursor
                     hasNextPage
-                    hasPreviousPage
                 }}
             }}
         }}
     }}
     """
 
-def fetch_data(table_name, response_array=None, after=None):
+def fetch_data_and_save_as_parquet(table_name, after=None, response_array=None):
     if response_array is None:
         response_array = []
 
@@ -79,20 +75,20 @@ def fetch_data(table_name, response_array=None, after=None):
         raise Exception(f"GraphQL error: {data['errors']}")
 
     table_data = data["data"]["repository"][table_name]
-
-    response_array.extend(table_data["edges"])
+    response_array.extend([edge["node"] for edge in table_data["edges"]])
 
     if table_data["pageInfo"]["hasNextPage"]:
-        return fetch_data(table_name, response_array, table_data["pageInfo"]["endCursor"])
+        return fetch_data_and_save_as_parquet(table_name, after=table_data["pageInfo"]["endCursor"], response_array=response_array)
 
-    return response_array
+    df = pd.json_normalize(response_array)
+    parquet_file_path = f"./data/{table_name}.parquet"
+    os.makedirs("./data", exist_ok=True)
+    df.to_parquet(parquet_file_path, engine="pyarrow")
+    print(f"Data for {table_name} saved to {parquet_file_path}")
 
 for table in tables:
     print(f"Fetching data for {table}...")
     try:
-        data = fetch_data(table)
-        with open(f"./data/{table}.json", "w") as json_file:
-            json.dump(data, json_file, indent=4)
-        print(f"Data for {table} saved to {table}.json")
+        fetch_data_and_save_as_parquet(table)
     except Exception as e:
         print(f"Failed to fetch data for {table}: {e}")

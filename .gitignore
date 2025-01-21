@@ -9,6 +9,3 @@ pyvenv.cfg
 
 # Environment
 .env
-
-# Data
-*.json
