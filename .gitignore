@@ -7,3 +7,8 @@ pyvenv.cfg
 # Jetbrains
 .idea
 
+# Environment
+.env
+
+# Data
+*.json
