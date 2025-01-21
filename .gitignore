@@ -1,0 +1,9 @@
+# Venv
+bin
+include
+lib
+pyvenv.cfg
+
+# Jetbrains
+.idea
+
