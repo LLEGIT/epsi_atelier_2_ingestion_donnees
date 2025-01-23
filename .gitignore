@@ -4,6 +4,9 @@ include
 lib
 pyvenv.cfg
 
+# Python
+__pycache__
+
 # Jetbrains
 .idea
 
