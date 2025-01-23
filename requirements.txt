@@ -3,3 +3,5 @@ python-dotenv
 pyarrow
 pandas
 duckdb
+dbt-core
+dbt-duckdb
