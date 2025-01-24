@@ -3,7 +3,7 @@ from sys import argv
 
 
 def fetch_table():
-    database_file = 'database.duckdb'
+    database_file = './database/github_data.duckdb'
     con = connect(database=database_file, read_only=False)
 
     correct_tables = ['deployments', 'forks', 'issues', 'labels', 'milestones', 'pullRequests', 'releases']

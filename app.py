@@ -74,21 +74,21 @@ def fetch_data_and_save_as_parquet(table_name, after=None, response_array=None):
     if "errors" in data:
         raise Exception(f"GraphQL error: {data['errors']}")
 
-    table_data = data["data"]["repository"][table_name]
+    table_data = data["api_data"]["repository"][table_name]
     response_array.extend([edge["node"] for edge in table_data["edges"]])
 
     if table_data["pageInfo"]["hasNextPage"]:
         return fetch_data_and_save_as_parquet(table_name, after=table_data["pageInfo"]["endCursor"], response_array=response_array)
 
     df = pd.json_normalize(response_array)
-    parquet_file_path = f"./data/{table_name}.parquet"
-    os.makedirs("./data", exist_ok=True)
+    parquet_file_path = f"api_data/{table_name}.parquet"
+    os.makedirs("api_data", exist_ok=True)
     df.to_parquet(parquet_file_path, engine="pyarrow")
     print(f"Data for {table_name} saved to {parquet_file_path}")
 
 for table in tables:
-    print(f"Fetching data for {table}...")
+    print(f"Fetching api_data for {table}...")
     try:
         fetch_data_and_save_as_parquet(table)
     except Exception as e:
-        print(f"Failed to fetch data for {table}: {e}")
+        print(f"Failed to fetch api_data for {table}: {e}")

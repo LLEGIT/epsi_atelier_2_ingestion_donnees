@@ -2,16 +2,16 @@ import duckdb
 from pandas import read_parquet
 
 # Load Parquet files into Pandas DataFrames
-deployments_file = read_parquet('./data/deployments.parquet')
-forks_file = read_parquet('./data/forks.parquet')
-issues_file = read_parquet('./data/issues.parquet')
-labels_file = read_parquet('./data/labels.parquet')
-milestones_file = read_parquet('./data/milestones.parquet')
-pull_requests_file = read_parquet('./data/pullRequests.parquet')
-releases_file = read_parquet('./data/releases.parquet')
+deployments_file = read_parquet('./api_data/deployments.parquet')
+forks_file = read_parquet('./api_data/forks.parquet')
+issues_file = read_parquet('./api_data/issues.parquet')
+labels_file = read_parquet('./api_data/labels.parquet')
+milestones_file = read_parquet('./api_data/milestones.parquet')
+pull_requests_file = read_parquet('./api_data/pullRequests.parquet')
+releases_file = read_parquet('./api_data/releases.parquet')
 
 # Create a DuckDB connection
-database_file = 'database.duckdb'
+database_file = './database/github_data.duckdb'
 con = duckdb.connect(database=database_file, read_only=False)
 
 # Register the Pandas DataFrames as virtual tables
@@ -32,7 +32,7 @@ con.execute("CREATE TABLE milestones AS SELECT * FROM milestones")
 con.execute("CREATE TABLE pull_requests AS SELECT * FROM pull_requests")
 con.execute("CREATE TABLE releases AS SELECT * FROM releases")
 
-# Query the data to confirm the table is created successfully
+# Query the api_data to confirm the table is created successfully
 result = con.execute("SELECT * FROM issues").fetchdf()
 print(result.head())
 

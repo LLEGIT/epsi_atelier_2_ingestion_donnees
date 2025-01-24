@@ -1,0 +1,15 @@
+cleansed:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: "github_data.duckdb"
+      threads: 4
+
+application:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: "github_data.duckdb"
+      threads: 4
