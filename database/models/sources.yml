@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+    - name: deployments
+    - name: forks
+    - name: issues
+    - name: labels
+    - name: milestones
+    - name: pull_requests
+    - name: releases

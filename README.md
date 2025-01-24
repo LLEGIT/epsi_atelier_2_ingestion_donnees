@@ -17,3 +17,13 @@ L'outil étudié est rocket chat, les sources de données identifiées sont :
 - les issues
 - les forks
 - les deployments
+
+## Dbt
+Nous avons pu intégrer l'outil dbt au sein du projet afin qu'il s'appuie sur note base de données `github_data.duckdb`, voici quelques captures d'écrans :
+<br>Page d'accueil :<br><br>
+![Homepage](public/screen1.png)
+<br>Data forks :<br>
+![Page 2](public/screen2.png)
+<br>Data issues :<br>
+![Page 3](public/screen3.png)
+
